@@ -1,61 +1,87 @@
-import { useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { ArrowLeft, Mail, Lock, User, GraduationCap, Building, Home } from "lucide-react";
-
-const branches = [
-  "Computer Engineering",
-  "Information Technology",
-  "Electronics & Communication",
-  "Electrical Engineering",
-  "Mechanical Engineering",
-  "Civil Engineering",
-  "Production & Industrial",
-  "Environmental Engineering",
-  "Biotechnology",
-  "Software Engineering",
-  "Mathematics & Computing",
-  "Engineering Physics",
-];
-
-const years = ["1st Year", "2nd Year", "3rd Year", "4th Year", "5th Year"];
-
-const hostels = [
-  "BH-1", "BH-2", "BH-3", "BH-4", "BR Hostel",
-  "GH-1", "GH-2",
-  "Day Scholar"
-];
+import { useState, useEffect } from "react";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import { ArrowLeft, Mail, Lock, User } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { EmailStep } from "@/components/auth/EmailStep";
+import { ProfileStep } from "@/components/auth/ProfileStep";
+import { CheckCircle } from "lucide-react";
 
 export default function Auth() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { user, isProfileComplete, signUp, signIn, updateProfile } = useAuth();
+  
   const [isSignup, setIsSignup] = useState(searchParams.get("mode") === "signup");
-  const [step, setStep] = useState(1);
-  const [email, setEmail] = useState("");
-  const [otp, setOtp] = useState("");
+  const [step, setStep] = useState<"auth" | "verify" | "profile">("auth");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [signupEmail, setSignupEmail] = useState<string | null>(null);
 
-  const handleEmailSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email.endsWith("@dtu.ac.in")) {
-      setStep(2);
+  // Handle complete-profile mode
+  useEffect(() => {
+    if (searchParams.get("mode") === "complete-profile" && user && !isProfileComplete) {
+      setStep("profile");
+    }
+  }, [searchParams, user, isProfileComplete]);
+
+  // Redirect if already logged in with complete profile
+  useEffect(() => {
+    if (user && isProfileComplete) {
+      navigate("/");
+    }
+  }, [user, isProfileComplete, navigate]);
+
+  const handleAuthSubmit = async (email: string, password: string) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      if (isSignup) {
+        const { error } = await signUp(email, password);
+        if (error) {
+          setError(error.message);
+        } else {
+          setSignupEmail(email);
+          setStep("verify");
+        }
+      } else {
+        const { error } = await signIn(email, password);
+        if (error) {
+          // Handle specific error cases
+          if (error.message.includes("Invalid login credentials")) {
+            setError("Invalid email or password. Please try again.");
+          } else if (error.message.includes("Email not confirmed")) {
+            setError("Please verify your email before signing in.");
+          } else {
+            setError(error.message);
+          }
+        }
+        // Navigation handled by useEffect when user state updates
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleOtpSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isSignup) {
-      setStep(3);
-    } else {
-      // Login success - redirect
-      console.log("Login successful");
+  const handleProfileSubmit = async (data: {
+    full_name: string;
+    roll_number: string;
+    branch: string;
+    year: string;
+    hostel: string;
+  }) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const { error } = await updateProfile(data);
+      if (error) {
+        setError(error.message);
+      } else {
+        navigate("/");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -79,12 +105,18 @@ export default function Auth() {
           </Link>
 
           <h1 className="text-4xl xl:text-5xl font-bold text-white mb-6">
-            {isSignup ? "Join the DTU Community" : "Welcome Back!"}
+            {step === "profile" 
+              ? "Almost There!" 
+              : isSignup 
+                ? "Join the DTU Community" 
+                : "Welcome Back!"}
           </h1>
           <p className="text-lg text-white/80 max-w-md">
-            {isSignup 
-              ? "Create your account and start trading with fellow DTU students today."
-              : "Sign in to access your marketplace, services, and more."}
+            {step === "profile"
+              ? "Complete your profile to start trading with fellow DTU students."
+              : isSignup 
+                ? "Create your account and start trading with fellow DTU students today."
+                : "Sign in to access your marketplace, services, and more."}
           </p>
 
           <div className="mt-12 space-y-4">
@@ -92,13 +124,13 @@ export default function Auth() {
               <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
                 <User className="h-5 w-5 text-white" />
               </div>
-              <div className="text-white/90">2,500+ verified students</div>
+              <div className="text-white/90">DTU students only</div>
             </div>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
                 <Mail className="h-5 w-5 text-white" />
               </div>
-              <div className="text-white/90">DTU email verification</div>
+              <div className="text-white/90">@dtu.ac.in email required</div>
             </div>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
@@ -138,196 +170,96 @@ export default function Auth() {
           {/* Form Header */}
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-foreground mb-2">
-              {isSignup 
-                ? step === 3 
-                  ? "Complete Your Profile" 
-                  : "Create Account"
-                : "Sign In"}
+              {step === "auth" && (isSignup ? "Create Account" : "Sign In")}
+              {step === "verify" && "Check Your Email"}
+              {step === "profile" && "Complete Your Profile"}
             </h2>
             <p className="text-muted-foreground">
-              {step === 1 && "Enter your DTU email to get started"}
-              {step === 2 && "We've sent a verification code to your email"}
-              {step === 3 && "Tell us a bit about yourself"}
+              {step === "auth" && "Enter your DTU email to get started"}
+              {step === "verify" && `We've sent a verification link to ${signupEmail}`}
+              {step === "profile" && "Tell us a bit about yourself"}
             </p>
           </div>
 
-          {/* Step 1: Email */}
-          {step === 1 && (
-            <form onSubmit={handleEmailSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">DTU Email</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="yourname@dtu.ac.in"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10"
-                    required
-                  />
-                </div>
-                {email && !email.endsWith("@dtu.ac.in") && (
-                  <p className="text-sm text-destructive">Please use your @dtu.ac.in email</p>
-                )}
-              </div>
-
-              <Button 
-                type="submit" 
-                className="w-full" 
-                size="lg"
-                disabled={!email.endsWith("@dtu.ac.in")}
-              >
-                {isSignup ? "Continue" : "Send OTP"}
-              </Button>
-            </form>
+          {/* Auth Step */}
+          {step === "auth" && (
+            <EmailStep
+              isSignup={isSignup}
+              onSubmit={handleAuthSubmit}
+              isLoading={isLoading}
+              error={error}
+            />
           )}
 
-          {/* Step 2: OTP */}
-          {step === 2 && (
-            <form onSubmit={handleOtpSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="otp">Verification Code</Label>
-                <Input
-                  id="otp"
-                  type="text"
-                  placeholder="Enter 6-digit code"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  maxLength={6}
-                  className="text-center text-2xl tracking-widest"
-                  required
-                />
-                <p className="text-sm text-muted-foreground text-center">
-                  Didn't receive the code?{" "}
-                  <button type="button" className="text-primary hover:underline">
-                    Resend
-                  </button>
+          {/* Email Verification Step */}
+          {step === "verify" && (
+            <div className="space-y-6">
+              <div className="flex justify-center">
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                  <CheckCircle className="h-8 w-8 text-primary" />
+                </div>
+              </div>
+              <div className="text-center space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  Click the link in your email to verify your account, then come back and sign in.
                 </p>
               </div>
-
-              <Button type="submit" className="w-full" size="lg">
-                {isSignup ? "Verify & Continue" : "Sign In"}
-              </Button>
-
-              <Button
+              <button
                 type="button"
-                variant="ghost"
-                className="w-full"
-                onClick={() => setStep(1)}
+                className="w-full text-center text-primary hover:underline text-sm"
+                onClick={() => {
+                  setStep("auth");
+                  setIsSignup(false);
+                }}
               >
-                Change email
-              </Button>
-            </form>
+                Go to Sign In
+              </button>
+            </div>
           )}
 
-          {/* Step 3: Profile (Signup only) */}
-          {step === 3 && isSignup && (
-            <form className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Full Name</Label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input id="name" placeholder="John Doe" className="pl-10" required />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="rollno">Roll Number</Label>
-                  <Input id="rollno" placeholder="2K21/XX/123" required />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="branch">Branch</Label>
-                <Select>
-                  <SelectTrigger>
-                    <GraduationCap className="h-4 w-4 mr-2" />
-                    <SelectValue placeholder="Select your branch" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {branches.map((branch) => (
-                      <SelectItem key={branch} value={branch.toLowerCase()}>
-                        {branch}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="year">Year</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select year" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {years.map((year) => (
-                        <SelectItem key={year} value={year}>
-                          {year}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="hostel">Hostel</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <Home className="h-4 w-4 mr-2" />
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {hostels.map((hostel) => (
-                        <SelectItem key={hostel} value={hostel.toLowerCase()}>
-                          {hostel}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <Button type="submit" className="w-full" size="lg">
-                Create Account
-              </Button>
-            </form>
+          {/* Profile Step */}
+          {step === "profile" && (
+            <ProfileStep
+              onSubmit={handleProfileSubmit}
+              isLoading={isLoading}
+              error={error}
+            />
           )}
 
           {/* Toggle Login/Signup */}
-          <div className="mt-8 text-center text-sm text-muted-foreground">
-            {isSignup ? (
-              <>
-                Already have an account?{" "}
-                <button
-                  type="button"
-                  className="text-primary font-medium hover:underline"
-                  onClick={() => {
-                    setIsSignup(false);
-                    setStep(1);
-                  }}
-                >
-                  Sign in
-                </button>
-              </>
-            ) : (
-              <>
-                Don't have an account?{" "}
-                <button
-                  type="button"
-                  className="text-primary font-medium hover:underline"
-                  onClick={() => {
-                    setIsSignup(true);
-                    setStep(1);
-                  }}
-                >
-                  Sign up
-                </button>
-              </>
-            )}
-          </div>
+          {step === "auth" && (
+            <div className="mt-8 text-center text-sm text-muted-foreground">
+              {isSignup ? (
+                <>
+                  Already have an account?{" "}
+                  <button
+                    type="button"
+                    className="text-primary font-medium hover:underline"
+                    onClick={() => {
+                      setIsSignup(false);
+                      setError(null);
+                    }}
+                  >
+                    Sign in
+                  </button>
+                </>
+              ) : (
+                <>
+                  Don't have an account?{" "}
+                  <button
+                    type="button"
+                    className="text-primary font-medium hover:underline"
+                    onClick={() => {
+                      setIsSignup(true);
+                      setError(null);
+                    }}
+                  >
+                    Sign up
+                  </button>
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
