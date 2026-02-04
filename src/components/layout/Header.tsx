@@ -7,12 +7,16 @@ import {
   ShoppingBag, 
   Briefcase, 
   BookOpen, 
-  Rocket, 
-  Users,
+  Clock, 
+  LayoutDashboard,
   LogIn,
   LogOut,
   User,
-  Loader2
+  Loader2,
+  Plus,
+  MessageSquare,
+  Bell,
+  Shield
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -22,20 +26,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUnreadCount } from "@/hooks/useNotifications";
+import { useIsAdmin } from "@/hooks/useAdmin";
 
 const navItems = [
   { name: "Marketplace", href: "/marketplace", icon: ShoppingBag },
   { name: "Services", href: "/services", icon: Briefcase },
-  { name: "Academics", href: "/academics", icon: BookOpen },
-  { name: "Gigs", href: "/gigs", icon: Rocket },
-  { name: "Community", href: "/community", icon: Users },
+  { name: "Resources", href: "/resources", icon: BookOpen },
+  { name: "Rentals", href: "/rentals", icon: Clock },
 ];
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, profile, isLoading, signOut } = useAuth();
   const navigate = useNavigate();
+  const unreadCount = useUnreadCount();
+  const { data: isAdmin } = useIsAdmin();
 
   const handleSignOut = async () => {
     await signOut();
@@ -82,49 +90,96 @@ export function Header() {
           </nav>
 
           {/* Auth Section */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2">
             {isLoading ? (
               <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
             ) : user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.full_name || "User"} />
-                      <AvatarFallback className="gradient-primary text-primary-foreground">
-                        {getInitials(profile?.full_name)}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
-                  <div className="flex flex-col space-y-1 p-2">
-                    <p className="text-sm font-medium leading-none">
-                      {profile?.full_name || "DTU Student"}
-                    </p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      {user.email}
-                    </p>
-                    {profile?.branch && (
-                      <p className="text-xs leading-none text-muted-foreground mt-1">
-                        {profile.branch} • {profile.year}
-                      </p>
+              <>
+                {/* Sell Button */}
+                <Button size="sm" asChild>
+                  <Link to="/sell">
+                    <Plus className="h-4 w-4 mr-1" />
+                    Sell
+                  </Link>
+                </Button>
+
+                {/* Messages */}
+                <Button variant="ghost" size="icon" asChild>
+                  <Link to="/messages">
+                    <MessageSquare className="h-5 w-5" />
+                  </Link>
+                </Button>
+
+                {/* Notifications */}
+                <Button variant="ghost" size="icon" className="relative" asChild>
+                  <Link to="/dashboard?tab=notifications">
+                    <Bell className="h-5 w-5" />
+                    {unreadCount > 0 && (
+                      <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs">
+                        {unreadCount > 9 ? "9+" : unreadCount}
+                      </Badge>
                     )}
-                  </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link to="/profile" className="cursor-pointer">
-                      <User className="mr-2 h-4 w-4" />
-                      Profile
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Sign out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                  </Link>
+                </Button>
+
+                {/* User Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.full_name || "User"} />
+                        <AvatarFallback className="gradient-primary text-primary-foreground">
+                          {getInitials(profile?.full_name)}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="end" forceMount>
+                    <div className="flex flex-col space-y-1 p-2">
+                      <p className="text-sm font-medium leading-none">
+                        {profile?.full_name || "DTU Student"}
+                      </p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.email}
+                      </p>
+                      {profile?.branch && (
+                        <p className="text-xs leading-none text-muted-foreground mt-1">
+                          {profile.branch} • {profile.year}
+                        </p>
+                      )}
+                    </div>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link to="/dashboard" className="cursor-pointer">
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/profile" className="cursor-pointer">
+                        <User className="mr-2 h-4 w-4" />
+                        Profile
+                      </Link>
+                    </DropdownMenuItem>
+                    {isAdmin && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
+                          <Link to="/admin" className="cursor-pointer">
+                            <Shield className="mr-2 h-4 w-4" />
+                            Admin Panel
+                          </Link>
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
             ) : (
               <>
                 <Button variant="ghost" size="sm" asChild>

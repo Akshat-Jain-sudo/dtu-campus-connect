@@ -12,6 +12,10 @@ interface Profile {
   year: string | null;
   hostel: string | null;
   avatar_url: string | null;
+  bio: string | null;
+  phone: string | null;
+  seller_verified: boolean;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }
