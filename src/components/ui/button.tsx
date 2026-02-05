@@ -9,14 +9,14 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm hover:shadow-md hover:-translate-y-0.5",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline: "border-2 border-primary bg-transparent text-primary hover:bg-primary hover:text-primary-foreground",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow-sm hover:shadow-glow hover:-translate-y-0.5",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm",
+        outline: "border-2 border-border/50 bg-transparent text-foreground hover:bg-accent/50 hover:border-primary/50 hover:text-primary",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border/30",
+        ghost: "hover:bg-accent/50 hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        hero: "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg hover:shadow-xl hover:-translate-y-1",
-        glass: "backdrop-blur-xl bg-card/80 border border-border/50 text-foreground hover:bg-card/90",
+        hero: "bg-gradient-to-r from-primary via-primary/90 to-primary/80 text-primary-foreground shadow-glow hover:shadow-glow-lg hover:-translate-y-1 animate-gradient",
+        glass: "backdrop-blur-xl bg-card/40 border border-border/40 text-foreground hover:bg-card/60 hover:border-primary/30 shadow-inner-glow",
       },
       size: {
         default: "h-11 px-6 py-2",
