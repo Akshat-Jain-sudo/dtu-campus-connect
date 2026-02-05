@@ -156,16 +156,21 @@ export default function Marketplace() {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="pt-24 pb-16">
-        <div className="container">
+      <main className="pt-24 pb-16 relative">
+        {/* Background Effects */}
+        <div className="absolute inset-0 bg-mesh-gradient pointer-events-none" />
+        <div className="absolute top-1/4 -right-32 w-[400px] h-[400px] bg-orb bg-orb-primary opacity-20" />
+        <div className="absolute bottom-1/4 -left-32 w-[300px] h-[300px] bg-orb bg-orb-secondary opacity-15" />
+        
+        <div className="container relative z-10">
           {/* Page Header */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
             <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">Marketplace</h1>
+              <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">Marketplace</h1>
               <p className="text-muted-foreground">Browse items from DTU students</p>
             </div>
-            <Button asChild>
-              <Link to="/marketplace/new">
+            <Button className="shadow-glow-sm hover:shadow-glow transition-shadow" asChild>
+              <Link to="/sell">
                 <Plus className="h-4 w-4 mr-2" />
                 Sell Something
               </Link>
@@ -180,16 +185,16 @@ export default function Marketplace() {
                 placeholder="Search items..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="pl-10 glass border-border/40 focus:border-primary/50 focus:ring-2 focus:ring-primary/20"
               />
             </div>
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-full sm:w-48">
+              <SelectTrigger className="w-full sm:w-48 glass border-border/40">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="glass-card border-border/40">
                 {categories.map((cat) => (
-                  <SelectItem key={cat.value} value={cat.value}>
+                  <SelectItem key={cat.value} value={cat.value} className="hover:bg-accent/50">
                     <div className="flex items-center gap-2">
                       <cat.icon className="h-4 w-4" />
                       {cat.name}
@@ -198,7 +203,7 @@ export default function Marketplace() {
                 ))}
               </SelectContent>
             </Select>
-            <Button variant="outline" size="icon">
+            <Button variant="outline" size="icon" className="border-border/40 hover:bg-accent/50 hover:border-primary/50">
               <SlidersHorizontal className="h-5 w-5" />
             </Button>
           </div>
@@ -209,10 +214,10 @@ export default function Marketplace() {
               <button
                 key={cat.value}
                 onClick={() => setSelectedCategory(cat.value)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200 ${
                   selectedCategory === cat.value
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground hover:bg-accent"
+                    ? "bg-primary text-primary-foreground shadow-glow-sm"
+                    : "glass border-border/40 text-muted-foreground hover:text-foreground hover:border-primary/30"
                 }`}
               >
                 <cat.icon className="h-4 w-4" />
@@ -231,18 +236,19 @@ export default function Marketplace() {
             {filteredListings.map((item) => (
               <Link
                 key={item.id}
-                to={`/marketplace/${item.id}`}
-                className="group category-card p-0 overflow-hidden hover-lift"
+                to={`/product/${item.id}`}
+                className="group glass-card p-0 overflow-hidden hover-lift"
               >
                 {/* Image */}
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <img
                     src={item.image}
                     alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <button 
-                    className="absolute top-3 right-3 h-9 w-9 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors"
+                    className="absolute top-3 right-3 h-9 w-9 rounded-full glass flex items-center justify-center hover:bg-primary/20 hover:border-primary/50 transition-all"
                     onClick={(e) => {
                       e.preventDefault();
                       // Add to wishlist
@@ -250,7 +256,7 @@ export default function Marketplace() {
                   >
                     <Heart className="h-4 w-4 text-muted-foreground hover:text-primary" />
                   </button>
-                  <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground">
+                  <Badge className="absolute top-3 left-3 bg-primary/90 text-primary-foreground shadow-glow-sm">
                     {item.condition}
                   </Badge>
                 </div>
@@ -258,7 +264,7 @@ export default function Marketplace() {
                 {/* Content */}
                 <div className="p-4">
                   <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
-                    <span>{item.category}</span>
+                    <span className="uppercase tracking-wider">{item.category}</span>
                     <span>{item.posted}</span>
                   </div>
                   <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1 mb-2">
@@ -277,7 +283,7 @@ export default function Marketplace() {
                     </div>
                     <div className="flex items-center gap-1">
                     {item.verified && (
-                        <span className="text-accent-foreground">✓</span>
+                        <span className="text-primary">✓</span>
                       )}
                       {item.seller}
                     </div>
@@ -290,12 +296,12 @@ export default function Marketplace() {
           {/* Empty State */}
           {filteredListings.length === 0 && (
             <div className="text-center py-16">
-              <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 rounded-full glass flex items-center justify-center mx-auto mb-4">
                 <Search className="h-8 w-8 text-muted-foreground" />
               </div>
               <h3 className="text-lg font-semibold text-foreground mb-2">No items found</h3>
               <p className="text-muted-foreground mb-4">Try adjusting your search or filters</p>
-              <Button variant="outline" onClick={() => {
+              <Button variant="outline" className="border-border/40 hover:bg-accent/50 hover:border-primary/50" onClick={() => {
                 setSearchQuery("");
                 setSelectedCategory("all");
               }}>
