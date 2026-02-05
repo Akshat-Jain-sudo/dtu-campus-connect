@@ -56,19 +56,23 @@ const featuredItems = [
 
 export function FeaturedListings() {
   return (
-    <section className="py-20">
-      <div className="container">
+    <section className="py-20 relative overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-orb bg-orb-secondary opacity-20" />
+      
+      <div className="container relative z-10">
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
           <div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-2">
               Featured Listings
             </h2>
             <p className="text-muted-foreground">
               Hot deals from your fellow DTUites
             </p>
           </div>
-          <Button variant="outline" asChild>
+          <Button variant="outline" className="border-border/50 hover:bg-accent/50 hover:border-primary/50 transition-all" asChild>
             <Link to="/marketplace">
               View All
               <ArrowRight className="h-4 w-4" />
@@ -82,26 +86,27 @@ export function FeaturedListings() {
             <Link
               key={item.id}
               to={`/marketplace/${item.id}`}
-              className="group category-card p-0 overflow-hidden hover-lift"
+              className="group glass-card p-0 overflow-hidden hover-lift"
             >
               {/* Image */}
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img
                   src={item.image}
                   alt={item.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                <button className="absolute top-3 right-3 h-9 w-9 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors">
-                  <Heart className="h-4 w-4 text-muted-foreground hover:text-primary" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <button className="absolute top-3 right-3 h-9 w-9 rounded-full glass flex items-center justify-center hover:bg-primary/20 transition-colors">
+                  <Heart className="h-4 w-4 text-foreground/80 hover:text-primary" />
                 </button>
-                <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground">
+                <Badge className="absolute top-3 left-3 bg-primary/90 text-primary-foreground shadow-glow-sm">
                   {item.condition}
                 </Badge>
               </div>
 
               {/* Content */}
               <div className="p-4">
-                <div className="text-xs text-muted-foreground mb-1">{item.category}</div>
+                <div className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">{item.category}</div>
                 <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1 mb-2">
                   {item.title}
                 </h3>
@@ -118,7 +123,7 @@ export function FeaturedListings() {
                   </div>
                   <div className="flex items-center gap-1">
                       {item.verified && (
-                        <span className="text-accent-foreground">✓</span>
+                        <span className="text-primary">✓</span>
                       )}
                     {item.seller}
                   </div>

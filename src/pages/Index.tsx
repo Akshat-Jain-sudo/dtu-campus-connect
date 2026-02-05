@@ -8,12 +8,18 @@ import { CTASection } from "@/components/home/CTASection";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      {/* Global background mesh */}
+      <div className="fixed inset-0 bg-mesh-gradient pointer-events-none" />
+      
       <Header />
-      <main>
+      <main className="relative z-10">
         <HeroSection />
+        <div className="section-divider" />
         <CategoriesSection />
+        <div className="section-divider" />
         <FeaturedListings />
+        <div className="section-divider" />
         <HowItWorks />
         <CTASection />
       </main>

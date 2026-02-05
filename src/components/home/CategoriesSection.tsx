@@ -14,7 +14,7 @@ const categories = [
     description: "Buy & sell electronics, books, cycles, and hostel essentials",
     icon: ShoppingBag,
     href: "/marketplace",
-    color: "from-red-500 to-orange-500",
+    gradient: "from-red-500 to-orange-500",
     count: "2,400+ items",
   },
   {
@@ -22,42 +22,46 @@ const categories = [
     description: "Find tutors, designers, developers, and more",
     icon: Briefcase,
     href: "/services",
-    color: "from-blue-500 to-cyan-500",
+    gradient: "from-blue-500 to-cyan-500",
     count: "500+ services",
   },
   {
     name: "Academics",
     description: "Share notes, PYQs, lab manuals, and projects",
     icon: BookOpen,
-    href: "/academics",
-    color: "from-green-500 to-emerald-500",
+    href: "/resources",
+    gradient: "from-green-500 to-emerald-500",
     count: "8,000+ resources",
   },
   {
     name: "Gigs & Internships",
     description: "Post and find internships, freelance work, and hackathons",
     icon: Rocket,
-    href: "/gigs",
-    color: "from-purple-500 to-pink-500",
+    href: "/services",
+    gradient: "from-purple-500 to-pink-500",
     count: "300+ opportunities",
   },
   {
     name: "Community",
     description: "Connect, discuss, and share with fellow DTUites",
     icon: Users,
-    href: "/community",
-    color: "from-amber-500 to-yellow-500",
+    href: "/marketplace",
+    gradient: "from-amber-500 to-yellow-500",
     count: "Active discussions",
   },
 ];
 
 export function CategoriesSection() {
   return (
-    <section className="py-20 bg-muted/30">
-      <div className="container">
+    <section className="py-20 relative overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/20 to-background" />
+      <div className="absolute top-1/2 left-1/4 w-[400px] h-[400px] bg-orb bg-orb-primary opacity-30" />
+      
+      <div className="container relative z-10">
         {/* Section Header */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
             Everything You Need,
             <span className="text-gradient"> All in One Place</span>
           </h2>
@@ -76,7 +80,7 @@ export function CategoriesSection() {
               style={{ animationDelay: `${index * 100}ms` }}
             >
               {/* Icon */}
-              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${category.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${category.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
                 <category.icon className="h-7 w-7 text-white" />
               </div>
 
@@ -90,7 +94,7 @@ export function CategoriesSection() {
 
               {/* Footer */}
               <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-primary bg-accent px-3 py-1 rounded-full">
+                <span className="text-xs font-medium text-primary bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20">
                   {category.count}
                 </span>
                 <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
