@@ -5,23 +5,27 @@ import { ArrowRight, ShieldCheck, Users, Zap } from "lucide-react";
 export function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
-      {/* Background Pattern */}
+      {/* Background Effects */}
       <div className="absolute inset-0 bg-hero-pattern" />
-      <div className="absolute top-1/4 -right-32 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 -left-32 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute top-1/4 -right-32 w-[500px] h-[500px] bg-orb bg-orb-primary animate-float" />
+      <div className="absolute bottom-1/4 -left-32 w-[400px] h-[400px] bg-orb bg-orb-secondary animate-float animation-delay-200" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-orb bg-orb-accent opacity-50" />
 
-      <div className="container relative">
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background pointer-events-none" />
+
+      <div className="container relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div className="text-center lg:text-left">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-accent-foreground text-sm font-medium mb-6 animate-fade-in-up">
-              <ShieldCheck className="h-4 w-4" />
-              Exclusively for DTU Students
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card text-sm font-medium mb-6 animate-fade-in-up shadow-inner-glow">
+              <ShieldCheck className="h-4 w-4 text-primary" />
+              <span className="text-foreground">Exclusively for DTU Students</span>
             </div>
 
             {/* Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6 animate-fade-in-up animation-delay-100">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight mb-6 animate-fade-in-up animation-delay-100">
               Your Campus.
               <br />
               <span className="text-gradient">Your Marketplace.</span>
@@ -34,28 +38,28 @@ export function HeroSection() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-up animation-delay-300">
-              <Button variant="hero" size="xl" asChild>
+              <Button variant="hero" size="xl" className="shadow-glow hover:shadow-glow-lg transition-shadow duration-300" asChild>
                 <Link to="/auth?mode=signup">
                   Join Now
                   <ArrowRight className="h-5 w-5" />
                 </Link>
               </Button>
-              <Button variant="outline" size="xl" asChild>
+              <Button variant="outline" size="xl" className="border-border/50 hover:bg-accent/50 hover:border-primary/50 transition-all" asChild>
                 <Link to="/marketplace">Explore Listings</Link>
               </Button>
             </div>
 
             {/* Stats */}
             <div className="flex flex-wrap justify-center lg:justify-start gap-8 mt-12 animate-fade-in-up animation-delay-400">
-              <div className="text-center">
+              <div className="text-center glass-card px-6 py-4 rounded-2xl">
                 <div className="text-3xl font-bold text-foreground">2,500+</div>
                 <div className="text-sm text-muted-foreground">Active Users</div>
               </div>
-              <div className="text-center">
+              <div className="text-center glass-card px-6 py-4 rounded-2xl">
                 <div className="text-3xl font-bold text-foreground">10,000+</div>
                 <div className="text-sm text-muted-foreground">Listings</div>
               </div>
-              <div className="text-center">
+              <div className="text-center glass-card px-6 py-4 rounded-2xl">
                 <div className="text-3xl font-bold text-foreground">₹5L+</div>
                 <div className="text-sm text-muted-foreground">Traded</div>
               </div>
@@ -66,9 +70,9 @@ export function HeroSection() {
           <div className="relative hidden lg:block">
             <div className="grid gap-4">
               {/* Feature Card 1 */}
-              <div className="category-card ml-auto max-w-xs animate-slide-in-right">
+              <div className="glass-card ml-auto max-w-xs animate-slide-in-right hover-lift">
                 <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-xl gradient-primary flex items-center justify-center">
+                  <div className="h-12 w-12 rounded-xl gradient-primary flex items-center justify-center shadow-glow-sm">
                     <Users className="h-6 w-6 text-primary-foreground" />
                   </div>
                   <div>
@@ -79,9 +83,9 @@ export function HeroSection() {
               </div>
 
               {/* Feature Card 2 */}
-              <div className="category-card mr-auto max-w-xs animate-slide-in-left animation-delay-100">
+              <div className="glass-card mr-auto max-w-xs animate-slide-in-left animation-delay-100 hover-lift">
                 <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-xl bg-accent flex items-center justify-center">
+                  <div className="h-12 w-12 rounded-xl bg-accent/50 border border-border/50 flex items-center justify-center">
                     <Zap className="h-6 w-6 text-accent-foreground" />
                   </div>
                   <div>
@@ -92,9 +96,9 @@ export function HeroSection() {
               </div>
 
               {/* Feature Card 3 */}
-              <div className="category-card ml-auto max-w-xs animate-slide-in-right animation-delay-200">
+              <div className="glass-card ml-auto max-w-xs animate-slide-in-right animation-delay-200 hover-lift">
                 <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-xl gradient-primary flex items-center justify-center">
+                  <div className="h-12 w-12 rounded-xl gradient-primary flex items-center justify-center shadow-glow-sm">
                     <ShieldCheck className="h-6 w-6 text-primary-foreground" />
                   </div>
                   <div>
