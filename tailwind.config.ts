@@ -91,6 +91,10 @@ export default {
           from: { transform: "scale(0.95)", opacity: "0" },
           to: { transform: "scale(1)", opacity: "1" },
         },
+        "glow": {
+          "0%, 100%": { opacity: "0.5" },
+          "50%": { opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -98,10 +102,21 @@ export default {
         "slide-in-right": "slide-in-right 0.4s ease-out",
         "slide-in-left": "slide-in-left 0.4s ease-out",
         "scale-in": "scale-in 0.3s ease-out",
+        "glow": "glow 2s ease-in-out infinite",
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'hero-pattern': 'radial-gradient(circle at 30% 20%, hsl(0 84% 50% / 0.08) 0%, transparent 50%)',
+        'hero-pattern': 'radial-gradient(ellipse at 30% 20%, hsl(0 84% 55% / 0.12) 0%, transparent 50%), radial-gradient(ellipse at 70% 60%, hsl(280 80% 50% / 0.08) 0%, transparent 50%)',
+        'mesh-gradient': 'radial-gradient(at 40% 20%, hsl(0 84% 55% / 0.08) 0px, transparent 50%), radial-gradient(at 80% 0%, hsl(280 80% 50% / 0.06) 0px, transparent 50%), radial-gradient(at 0% 50%, hsl(220 80% 50% / 0.05) 0px, transparent 50%)',
+        'glass-gradient': 'linear-gradient(135deg, hsl(0 0% 100% / 0.04) 0%, transparent 50%)',
+        'glow-gradient': 'radial-gradient(circle at center, hsl(0 84% 55% / 0.15) 0%, transparent 70%)',
+      },
+      boxShadow: {
+        'glow-sm': '0 0 20px -5px hsl(0 84% 55% / 0.3)',
+        'glow': '0 0 40px -10px hsl(0 84% 55% / 0.4)',
+        'glow-lg': '0 0 60px -15px hsl(0 84% 55% / 0.5)',
+        'inner-glow': 'inset 0 1px 0 0 hsl(0 0% 100% / 0.05)',
+        'premium': '0 20px 50px -15px hsl(0 0% 0% / 0.5), inset 0 1px 0 0 hsl(0 0% 100% / 0.05)',
       },
     },
   },
