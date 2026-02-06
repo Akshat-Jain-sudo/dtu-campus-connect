@@ -27,11 +27,22 @@ export function useCart() {
       if (!user) return [];
       const { data, error } = await supabase
         .from("cart")
-        .select(`*, listing:listings(id, title, price, images, user_id, status)`)
+        .select("*")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as CartItem[];
+
+      // Fetch listing details for each cart item
+      const listingIds = data.map(item => item.listing_id);
+      const { data: listings } = await supabase
+        .from("listings")
+        .select("id, title, price, images, user_id, status")
+        .in("id", listingIds);
+
+      return data.map(item => ({
+        ...item,
+        listing: listings?.find(l => l.id === item.listing_id) ?? undefined,
+      })) as CartItem[];
     },
     enabled: !!user,
   });

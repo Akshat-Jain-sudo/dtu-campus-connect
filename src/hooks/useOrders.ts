@@ -55,10 +55,20 @@ export function useAllOrders() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select(`*, listing:listings(id, title, price, images)`)
+        .select("*")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as Order[];
+
+      const listingIds = data.map(o => o.listing_id);
+      const { data: listings } = await supabase
+        .from("listings")
+        .select("id, title, price, images")
+        .in("id", listingIds);
+
+      return data.map(o => ({
+        ...o,
+        listing: listings?.find(l => l.id === o.listing_id) ?? undefined,
+      })) as Order[];
     },
   });
 }
