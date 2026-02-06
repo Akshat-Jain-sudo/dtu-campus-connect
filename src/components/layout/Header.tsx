@@ -46,6 +46,7 @@ export function Header() {
   const navigate = useNavigate();
   const unreadCount = useUnreadCount();
   const { data: isAdmin } = useIsAdmin();
+  const cartCount = useCartCount();
 
   const handleSignOut = async () => {
     await signOut();
