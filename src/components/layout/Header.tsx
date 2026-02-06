@@ -9,6 +9,7 @@ import {
   BookOpen, 
   Clock, 
   LayoutDashboard,
+  ShoppingCart,
   LogIn,
   LogOut,
   User,
