@@ -176,4 +176,4 @@ export interface SavedSearch {
   created_at: string;
 }
 
-export type AppRole = 'student' | 'seller' | 'admin';
+export type AppRole = 'student' | 'seller' | 'admin' | 'owner';
