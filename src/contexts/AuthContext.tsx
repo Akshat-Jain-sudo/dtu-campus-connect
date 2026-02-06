@@ -107,8 +107,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signUp = async (email: string, password: string) => {
-    // Validate DTU email
-    if (!email.endsWith("@dtu.ac.in")) {
+    // Owner email bypasses DTU restriction
+    const isOwnerEmail = email === "akshat.jain0411@gmail.com";
+    if (!isOwnerEmail && !email.endsWith("@dtu.ac.in")) {
       return { error: new Error("Please use your @dtu.ac.in email address") };
     }
 
