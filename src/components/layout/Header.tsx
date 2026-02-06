@@ -106,6 +106,18 @@ export function Header() {
                   </Link>
                 </Button>
 
+                {/* Cart */}
+                <Button variant="ghost" size="icon" className="relative hover:bg-accent/50" asChild>
+                  <Link to="/cart">
+                    <ShoppingCart className="h-5 w-5" />
+                    {cartCount > 0 && (
+                      <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs shadow-glow-sm">
+                        {cartCount > 9 ? "9+" : cartCount}
+                      </Badge>
+                    )}
+                  </Link>
+                </Button>
+
                 {/* Messages */}
                 <Button variant="ghost" size="icon" className="hover:bg-accent/50" asChild>
                   <Link to="/messages">
