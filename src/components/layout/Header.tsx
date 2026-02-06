@@ -9,6 +9,7 @@ import {
   BookOpen, 
   Clock, 
   LayoutDashboard,
+  ShoppingCart,
   LogIn,
   LogOut,
   User,
@@ -30,6 +31,7 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUnreadCount } from "@/hooks/useNotifications";
 import { useIsAdmin } from "@/hooks/useAdmin";
+import { useCartCount } from "@/hooks/useCart";
 
 const navItems = [
   { name: "Marketplace", href: "/marketplace", icon: ShoppingBag },
@@ -44,6 +46,7 @@ export function Header() {
   const navigate = useNavigate();
   const unreadCount = useUnreadCount();
   const { data: isAdmin } = useIsAdmin();
+  const cartCount = useCartCount();
 
   const handleSignOut = async () => {
     await signOut();
@@ -100,6 +103,18 @@ export function Header() {
                   <Link to="/sell">
                     <Plus className="h-4 w-4 mr-1" />
                     Sell
+                  </Link>
+                </Button>
+
+                {/* Cart */}
+                <Button variant="ghost" size="icon" className="relative hover:bg-accent/50" asChild>
+                  <Link to="/cart">
+                    <ShoppingCart className="h-5 w-5" />
+                    {cartCount > 0 && (
+                      <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs shadow-glow-sm">
+                        {cartCount > 9 ? "9+" : cartCount}
+                      </Badge>
+                    )}
                   </Link>
                 </Button>
 

@@ -17,6 +17,8 @@ import Services from "./pages/Services";
 import Resources from "./pages/Resources";
 import Rentals from "./pages/Rentals";
 import Admin from "./pages/Admin";
+import Cart from "./pages/Cart";
+import Orders from "./pages/Orders";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -84,6 +86,22 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Admin />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/cart"
+              element={
+                <ProtectedRoute>
+                  <Cart />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/orders"
+              element={
+                <ProtectedRoute>
+                  <Orders />
                 </ProtectedRoute>
               }
             />

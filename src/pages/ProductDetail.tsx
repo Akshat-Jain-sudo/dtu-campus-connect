@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/Footer";
 import { useListing } from "@/hooks/useListings";
 import { useToggleWishlist, useIsInWishlist } from "@/hooks/useWishlist";
 import { useStartConversation } from "@/hooks/useMessages";
+import { useAddToCart } from "@/hooks/useCart";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Heart, MessageSquare, Share2, Flag, MapPin, 
-  Calendar, Eye, ArrowLeft, Tag, Check 
+  Calendar, Eye, ArrowLeft, Tag, Check, ShoppingCart 
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -27,6 +28,7 @@ const ProductDetail = () => {
   const isInWishlist = useIsInWishlist(id ?? "");
   const toggleWishlist = useToggleWishlist();
   const startConversation = useStartConversation();
+  const addToCart = useAddToCart();
 
   const handleWishlist = async () => {
     if (!user) {
@@ -238,6 +240,22 @@ const ProductDetail = () => {
               >
                 <MessageSquare className="mr-2 h-5 w-5" />
                 Contact Seller
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={async () => {
+                  if (!user) { navigate("/auth"); return; }
+                  try {
+                    await addToCart.mutateAsync(listing.id);
+                    toast({ title: "Added to cart!" });
+                  } catch (e: any) {
+                    toast({ title: e.message === "Already in cart" ? "Already in cart" : "Failed to add", variant: "destructive" });
+                  }
+                }}
+                disabled={listing.user_id === user?.id}
+              >
+                <ShoppingCart className="h-5 w-5" />
               </Button>
               <Button
                 variant="outline"
