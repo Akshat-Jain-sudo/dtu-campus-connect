@@ -14,7 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Heart, MessageSquare, Share2, Flag, MapPin, 
-  Calendar, Eye, ArrowLeft, Tag, Check 
+  Calendar, Eye, ArrowLeft, Tag, Check, ShoppingCart 
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
