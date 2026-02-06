@@ -31,6 +31,7 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUnreadCount } from "@/hooks/useNotifications";
 import { useIsAdmin } from "@/hooks/useAdmin";
+import { useCartCount } from "@/hooks/useCart";
 
 const navItems = [
   { name: "Marketplace", href: "/marketplace", icon: ShoppingBag },
