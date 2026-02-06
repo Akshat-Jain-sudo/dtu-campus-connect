@@ -244,6 +244,22 @@ const ProductDetail = () => {
               <Button
                 variant="outline"
                 size="lg"
+                onClick={async () => {
+                  if (!user) { navigate("/auth"); return; }
+                  try {
+                    await addToCart.mutateAsync(listing.id);
+                    toast({ title: "Added to cart!" });
+                  } catch (e: any) {
+                    toast({ title: e.message === "Already in cart" ? "Already in cart" : "Failed to add", variant: "destructive" });
+                  }
+                }}
+                disabled={listing.user_id === user?.id}
+              >
+                <ShoppingCart className="h-5 w-5" />
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
                 onClick={handleWishlist}
                 className={cn(isInWishlist && "text-red-500 border-red-500")}
               >
