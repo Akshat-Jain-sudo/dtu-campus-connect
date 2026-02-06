@@ -28,6 +28,7 @@ const ProductDetail = () => {
   const isInWishlist = useIsInWishlist(id ?? "");
   const toggleWishlist = useToggleWishlist();
   const startConversation = useStartConversation();
+  const addToCart = useAddToCart();
 
   const handleWishlist = async () => {
     if (!user) {
