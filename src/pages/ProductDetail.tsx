@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/Footer";
 import { useListing } from "@/hooks/useListings";
 import { useToggleWishlist, useIsInWishlist } from "@/hooks/useWishlist";
 import { useStartConversation } from "@/hooks/useMessages";
+import { useAddToCart } from "@/hooks/useCart";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
