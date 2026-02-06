@@ -17,7 +17,8 @@ export function EmailStep({ isSignup, onSubmit, isLoading, error }: EmailStepPro
   const [confirmPassword, setConfirmPassword] = useState("");
   const [localError, setLocalError] = useState<string | null>(null);
 
-  const isValidEmail = email.endsWith("@dtu.ac.in");
+  const isOwnerEmail = email === "akshat.jain0411@gmail.com";
+  const isValidEmail = isOwnerEmail || email.endsWith("@dtu.ac.in");
   const passwordsMatch = password === confirmPassword;
   const isPasswordValid = password.length >= 6;
 
